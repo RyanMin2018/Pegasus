@@ -17,19 +17,6 @@
         </style>
 {% endblock custom_style %}
 
-{% block custom_script %}
-    {% if not request.user.is_authenticated or post_author != request.user %}
-        <script>
-            if (confirm('등록할 권한이 없어요. 로그인하러 가실께요.')) {
-                location.href = '{% url 'login' %}';
-            } else {
-                history.go(-1);
-            }
-        </script>
-    {% endif %}
-
-{% endblock custom_script %}
-
 {% block custom_actions %}
     {% if request.user.is_authenticated %}
         {% if post_author == request.user %}

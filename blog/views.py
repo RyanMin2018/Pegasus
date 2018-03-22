@@ -58,9 +58,9 @@ def blog_detail(request, pk):
 def uploadImageFile(request, bid):
     blogid = Blog.objects.get(pk=bid)
     if request.method == "POST":
-        ImageFormSet = BlogImageFormSet(request.POST, request.FILES, instance=blogid)
-        if ImageFormSet.is_valid():
-            ImageFormSet.save()
+        imgForm = BlogImageFormSet(request.POST, request.FILES, instance=blogid)
+        if imgForm.is_valid():
+            imgForm.save()
 
 # Regist Page
 def blog_new(request):
@@ -74,15 +74,18 @@ def blog_new(request):
             uploadImageFile(request, post.pk)
             return redirect('blog:blog_detail', str(post.pk))
     else:
-        form = BlogForm()
-        ImageFormSet = BlogImageFormSet(form_kwargs={'label_suffix': ''})
-        return render(request, 'blog/blog_form.html', {
-                'form':form,
-                'fileform':ImageFormSet,
-                'strPageTitle':'등록',
-                'post_author':request.user
-            }
-        )
+        if request.user.is_authenticated:
+            form = BlogForm()
+            ImageFormSet = BlogImageFormSet(form_kwargs={'label_suffix': ''})
+            return render(request, 'blog/blog_form.html', {
+                    'form':form,
+                    'fileform':ImageFormSet,
+                    'strPageTitle':'등록',
+                    'post_author':request.user
+                }
+            )
+        else:
+            return render(request, 'registration/access_deny.html')
 
 # Edit Page
 def blog_edit(request, pk):
@@ -97,23 +100,29 @@ def blog_edit(request, pk):
             uploadImageFile(request, post.pk)
             return redirect('blog:blog_detail', str(post.pk))
     else:
-        form = BlogForm(instance=post)
-        blogid       = Blog.objects.get(pk=post.pk)
-        ImageFormSet = BlogImageFormSet(instance=blogid,
-                                        form_kwargs={'label_suffix': ''})
-        return render(request, 'blog/blog_form.html', {
-                'form': form,
-                'fileform':ImageFormSet,
-                'strPageTitle':'수정',
-                'post_author':post.author
-            }
-        )
+        if request.user.is_authenticated and request.user == post.author:
+            form = BlogForm(instance=post)
+            blogid       = Blog.objects.get(pk=post.pk)
+            ImageFormSet = BlogImageFormSet(instance=blogid,
+                                            form_kwargs={'label_suffix': ''})
+            return render(request, 'blog/blog_form.html', {
+                    'form': form,
+                    'fileform':ImageFormSet,
+                    'strPageTitle':'수정',
+                    'post_author':post.author
+                }
+            )
+        else:
+            return render(request, 'registration/access_deny.html')
 
 # Delete Post
 def blog_delete(request, pk):
     post = get_object_or_404(Blog, pk=pk)
-    post.delete()
-    return redirect('blog:blog_list')
+    if request.user.is_authenticated and request.user == post.author:
+        post.delete()
+        return redirect('blog:blog_list')
+    else:
+        return render(request, 'registration/access_deny.html')
 
 
 # Get category name and that's count of articles.
