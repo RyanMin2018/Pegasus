@@ -1,7 +1,8 @@
 
-This has NOT “settings.py”. Add content to your “settings.py” file as follows:
+# This has NOT “settings.py”. Add content to your “settings.py” file as follows:
 
-# add ‘Main’, ‘blog’, ‘poll’ before 'django.contrib.admin' in INSTALLED_APPS. 
+add ‘Main’, ‘blog’, ‘poll’ before 'django.contrib.admin' in INSTALLED_APPS. 
+
 INSTALLED_APPS = [
     'main',
     'blog',
@@ -9,5 +10,6 @@ INSTALLED_APPS = [
     …
 ]
 
-# add Redirection Url After Login
+add Redirection Url After Login
+
 LOGIN_REDIRECT_URL = '/'
