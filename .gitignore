@@ -3,7 +3,7 @@
 __pycache__
 __init__.py
 settings.py
-/static
+/static/admin
 /media
 migrations
 manage.py
