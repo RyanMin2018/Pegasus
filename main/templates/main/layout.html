@@ -1,0 +1,116 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<title>{% block title %}{% endblock %}</title>
+		<meta name="keywords" content="Django Study">
+		<meta name="description" content="We love your thought!">
+		<meta name="robots" content="index,follow">
+		<meta property="og:title" content="Your Sology">
+		<meta property="og:url" content="http://ryanmin2018.pythonanywhere.com/">
+		<meta property="og:image" content="/images/logo.png">
+		<meta property="og:description" content="We love your thought!">
+		<link rel="canonical" href="http://ryanmin2018.pythonanywhere.com/">
+		<link rel="apple-touch-icon-precomposed" href="/favicon.ico">
+		<link rel="shortcut icon" href="/favicon.ico">
+		<link rel="stylesheet" href="{% static 'css/style.css' %}?00007" type="text/css" media="all">
+        <!-- custom_style_block -->
+        {% block custom_style %}
+        {% endblock %}
+        <!-- // custom_style_block -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+		<script src="{% static 'js/common.js' %}" type="text/javascript"></script>
+		<!-- custom_script_block -->
+        {% block custom_script %}
+        {% endblock %}
+        <!-- // custom_script_block -->
+	</head>
+	<body>
+		<div id="section_pop_menu">
+			<ul>
+				<li onclick="location.href='/';"><a href="/" title="홈으로">Home</a></li>
+				<li onclick="location.href='/blog/';"><a href="/blog/" title="Blog">Blog</a></li>
+			</ul>
+		</div>
+		<div id="container">
+			<div id="header">
+				<div id="section_logo">
+					<img id="menu" src="{% static 'images/btnBurger.png' %}" onclick="controlPopMenu();return false;" alt="메뉴열기" title="메뉴열기">
+					<span id="domain"><a href='/'>PEGASUS</a></span>
+				</div>
+				<div id="section_logon_status">
+				    {% if user.is_active %}
+				    {{ user.username }}
+				    <a href='{% url 'logout' %}' class='btn'>LOGOUT</a>
+				    {% else %}
+				    <a href='{% url 'login' %}' class='btn'>LOGIN</a>
+				    <a href='{% url 'join' %}' class='btn'>CREATE ACCOUNT</a>
+				    {% endif %}
+				</div>
+			</div>
+			<div id="section_top_navigation"></div>
+			<div id="alert"></div>
+			<div id="article">
+			    <div id="section_left"></div>
+			    <div id="section_body_top">
+    				<span id="section_buttons">
+    				    {% block custom_actions %}
+    				    {% endblock %}
+    				</span>
+    				<span id="section_location"><a href='/' title='홈으로 이동'>HOME</a>{% block location %}{% endblock %}</span>
+				</div>
+				<div id="section_body">
+
+                    {% block content %}
+                    {% endblock %}
+
+
+                    <p>&nbsp;</p>
+
+                    <script type='text/javascript'>
+                        /* 메뉴를 완성합니다. 이 기능은 layout.html에 정의되어 있습니다.  */
+                        $(document).ready(function(){
+                        	$.ajax({
+                        		url:'/blog/category/',
+                        		success:function(r) {
+                        		    $('#section_pop_menu').append(r);
+                        		},
+                        		complete:function() {
+                        		    $('#section_pop_menu').append('<li onclick="location.href=\'/poll/\';"><a href="/poll/" title="Poll">Poll</a></li>');
+                        		}
+                        	});
+
+                        });
+                    </script>
+
+
+                </div>
+            </div>
+            <div id="section_right"></div>
+        </div>
+        <iframe id="actionframe" name="actionframe" title="화면전환없는 데이터 처리를 위한 감춰진 프레임"></iframe>
+        <div id="footer">
+            <div id="copyright">COPYRIGHTⓒ<b></b>. ALL RIGHTS RESERVED.</div>
+        </div>
+
+        <div id="bottom"></div>
+
+        <img id="gotop" src="{% static 'images/top.png' %}" onclick="goTop();" alt="go top" title="go top">
+        <script src="{% static 'js/onloaded.js' %}" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js" type="text/javascript"></script>
+        <script>
+            $(function(){
+    	        $('img.lazyload').lazyload({effect:'fadeIn',effectTime:1000,load:function(){
+    			        $(this).css('min-height',0);
+    		        }
+    	        });
+            });
+            // speak('en-US', 'articlecontent');
+        </script>
+    </body>
+</html>

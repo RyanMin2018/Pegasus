@@ -1,0 +1,10 @@
+*.pyc
+*~
+__pycache__
+__init__.py
+settings.py
+/static
+/media
+migrations
+manage.py
+

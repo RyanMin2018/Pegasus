@@ -1,0 +1,45 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block location %}
+    &nbsp;&nbsp;/&nbsp;&nbsp;<a href='{% url 'login' %}'>LOGIN</a>
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='title'>Login</h1>
+
+        <div class="subtitle">
+            {% if form.errors %}
+            사용자 이름과 비밀번호를 틀리지 않게 입력하세요.
+            {% endif %}
+
+            {% if next %}
+                {% if user.is_authenticated %}
+                이미 로그인되어 있어요. 다시 로그인해도 되지만, 굳이...
+                {% else %}
+                로그인하세요.
+                {% endif %}
+            {% endif %}
+        </div>
+
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <ul>
+        <li style='margin-bottom:10px;'>{{ form.username.label_tag }}{{ form.username }}</li>
+        <li>{{ form.password.label_tag }}{{ form.password }}</li>
+    </ul>
+
+    <div style='margin-top:20px;'>
+        <span>
+            <input type="submit" value="LOGIN" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </span>
+        <span>
+            <!-- a href="{% url 'password_reset' %}">Lost password?</a -->
+        </span>
+    </div>
+    </form>
+
+{% endblock %}

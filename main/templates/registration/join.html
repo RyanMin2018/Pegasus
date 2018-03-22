@@ -1,0 +1,42 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block custom_style %}
+        <style>
+        #section_form {position:relative;}
+        #section_form p {position:relative;width:100%;margin-bottom:10px;}
+        #section_form ul {margin-top:-30px;}
+        span.helptext, #section_form li {margin-left:90px;font-size:0.85em;line-height:14px;}
+
+
+        </style>
+{% endblock custom_style %}
+
+{% block location %}
+    &nbsp;&nbsp;/&nbsp;&nbsp;<a href='#'>CREATE ACCOUNT</a>
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='title'>Create Account</h1>
+
+    <div class="subtitle">
+    </div>
+
+    <form method="post" action="{% url 'join' %}">
+    {% csrf_token %}
+    <div id='section_form'>
+    {{ form.as_p }}
+    </div>
+    <div style='margin-top:20px;'>
+        <span>
+            <input type="submit" value="Create New Account" />
+        </span>
+        <span>
+            <a href="{% url 'login' %}">Login</a>
+        </span>
+    </div>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Logout{% endblock %}
+
+{% block location %}
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='title'>Logout</h1>
+    <div class="subtitle">이용해 주셔서 감사하네요. 또 오세요.</div>
+    <div>&nbsp;</div>
+    <div>
+        <a href="{% url 'login' %}">로그인</a> | <a href='/'>HOME</a>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{ strPageTitle }} - 생각을 기록하고 나누세요!{% endblock %}
+
+{% block custom_style %}
+        <style>
+        li {list-style-type:none;min-height:40px;}
+        select {height:37px;}
+        input[type=file] {padding-left:0;border:0;width:250px;}
+        label[for$='clear_id'], input[id$='clear_id'] {display:none;}
+        label[for$='DELETE'] {margin-left:90px;margin-top:-5px;font-weight:normal;width:30px;}
+        button {margin-left:90px;}
+
+        @media only screen and (max-width : 700px) {
+               label[for$='DELETE'] {display:block;margin-left:0;}
+        }
+        </style>
+{% endblock custom_style %}
+
+{% block custom_script %}
+    {% if not request.user.is_authenticated or post_author != request.user %}
+        <script>
+            if (confirm('등록할 권한이 없어요. 로그인하러 가실께요.')) {
+                location.href = '{% url 'login' %}';
+            } else {
+                history.go(-1);
+            }
+        </script>
+    {% endif %}
+
+{% endblock custom_script %}
+
+{% block custom_actions %}
+    {% if request.user.is_authenticated %}
+        {% if post_author == request.user %}
+            <a href='javascript:history.go(-1);'>GO BACK</a>
+        {% endif %}
+        <a href='{% url 'blog:blog_new' %}'>NEW POST</a>
+    {% endif %}
+{% endblock custom_actions %}
+
+
+{% block location %}
+    &nbsp;&nbsp;|&nbsp;&nbsp;<a href='{% url 'blog:blog_list' %}'>BLOG</a>
+    &nbsp;&nbsp;|&nbsp;&nbsp;<a href='#'>{{ strPageTitle }}</a>
+{% endblock location %}
+
+
+{% block content %}
+
+    <!--h1 class='title'>{{ strPageTitle }}</h1>
+    <div class="subtitle">생각을 기록하고 나누세요!</div -->
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div id='articlecontent'>
+        <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_ul }}
+        {{ fileform.as_ul }}
+        <div id='btns'><button type="submit">저장</button></div>
+        </form>
+    </div>
+{% endblock content %}
+

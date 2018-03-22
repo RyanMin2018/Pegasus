@@ -1,0 +1,27 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{ question.question_text }}{% endblock %}
+
+{% block content %}
+
+    <style>
+        span .item {}
+        span .cnt {position:absolute;right:0;}
+    </style>
+
+
+    <h1>{{ question.question_text }}</h1>
+
+    <table>
+    {% for choice in choice_set %}
+        <tr>
+            <td class='t'>{{ choice.choice_text }}</td>
+            <td class='n'>{{ choice.votes }}</td>
+            <td class='t'>vote{{ choice.votes|pluralize }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <a href="{% url 'poll:poll_detail' question.id %}" class='btn'>VOTE AGAIN?</a>
+
+{% endblock %}

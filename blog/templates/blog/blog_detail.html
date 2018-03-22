@@ -1,0 +1,88 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block custom_script %}
+        <script>
+        {% if request.user.is_authenticated %}
+            {% if post_author == request.user %}
+        function drop_confirm() {
+            if(confirm('정말 삭제하시겠습니까?')) {
+                location.href = '{% url 'blog:blog_delete' pk=post.pk %}';
+            }
+        }
+            {% endif %}
+        {% endif %}
+        </script>
+{% endblock custom_script %}
+
+{% block custom_actions %}
+    {% if request.user.is_authenticated %}
+        {% if post_author == request.user %}
+            <a href='{% url 'blog:blog_edit' pk=post.pk %}'>EDIT</a>
+            <a href='javascript:drop_confirm()'>DROP</a>
+        {% endif %}
+        <a href='{% url 'blog:blog_new' %}'>NEW</a>
+    {% endif %}
+{% endblock custom_actions %}
+
+{% block location %}
+    &nbsp;&nbsp;/&nbsp;&nbsp;<a href='{% url 'blog:blog_list' %}'>BLOG</a>
+    &nbsp;&nbsp;/&nbsp;&nbsp;<a href='{% url 'blog:blog_list' %}?cat={{ post.category.pk }}'>{{ post.category.category_name }}</a>
+{% endblock %}
+
+{% block content %}
+    <div class="post">
+        <h1 class='title'>{{ post.title }}</h1>
+
+        <div class="subtitle">
+            {% if post.published_date %}
+            <p style='padding-bottom:15px;'>{{post.published_date}}&nbsp;|&nbsp;{{ post.category.category_name }}</p>
+            <!-- span>PUBLISHED {{ post.published_date|date:"Y.m.d" }} {{ post.published_date|time:"H:i" }}</span -->
+            <p>
+            {% endif %}
+            <span><a href='{% url 'blog:blog_list' %}?page={{page}}{% if category %}&cat={{category}}{% endif %}'>목록으로</a></span>
+            <span id="speak">
+                <a href="#articlecontent" onclick="speakStart();return false;" title="소리내어 내용 읽기">내용읽기</a>
+                <a href="#articlecontent" onclick="speakContinue();return false;" title="소리내어 이어 읽기">이어읽기</a>
+                <a href="#articlecontent" onclick="speakStop();return false;" title="그만 읽기">그만읽기</a>
+            </span>
+            </p>
+        </div>
+
+        <div>&nbsp;</div>
+
+        <div>
+            {% for f in files %}
+            <img class='article_imgs' src='{{f.img.url}}' title='{{ f.img.name }}' />
+            {% endfor %}
+            <div id='articlecontent'>
+                {{ post.text|linebreaksbr|urlize }}
+            </div>
+        </div>
+
+    </div>
+
+    <script src='{% get_static_prefix %}js/SpeechText.js?0003' type='text/javascript'></script>
+    <script type='text/javascript'>
+        var start = false;
+        var st = new SpeechText('59d225a9634d334550e6a834', 'ko-KR', 'articlecontent');
+        function speakStart() {
+        	st.start();
+        	start = true;
+        };
+        function speakContinue() {
+        	st.keepon();
+        	start = true;
+        };
+        function speakStop() {
+        	st.stop();
+        	start = false;
+        };
+        st.msg.onend = function(e) {
+        	if (start) speakContinue();
+        };
+    </script>
+
+{% endblock %}

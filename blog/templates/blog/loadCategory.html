@@ -1,0 +1,13 @@
+
+    <p>&nbsp;</p>
+
+    <script type='text/javascript'>
+        $(document).ready(function(){
+        	$.ajax({
+        		url:'/blog/category/',
+        		success:function(r) {
+        		    $('#section_pop_menu').append(r);
+        		}
+        	});
+        });
+    </script>

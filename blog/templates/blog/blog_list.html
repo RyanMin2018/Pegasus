@@ -1,0 +1,39 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Blog List{% endblock %}
+
+{% block custom_actions %}
+    <a href='{% url 'blog:blog_new' %}'>NEW POST</a>
+{% endblock custom_actions %}
+
+{% block location %}
+    &nbsp;&nbsp;/&nbsp;&nbsp;<a href='{% url 'blog:blog_list' %}'>BLOG</a>
+    {% if category %}
+        &nbsp;&nbsp;/&nbsp;&nbsp;<a href='{% url 'blog:blog_list' %}?cat={{ category }}'>{{ category_name }}</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <script src="{% get_static_prefix %}js/pagination.js" type="text/javascript"></script>
+    <style>
+        .articlesummary {padding-top:14px;color:#888;}
+        .delimeter {height:20px;border-bottom:1px solid #ddd;}
+    </style>
+
+    {% for post in posts %}
+        <h1 class='title'><a href="{% url 'blog:blog_detail' pk=post.pk %}?page={{posts.number}}{% if category %}&cat={{ category }}{% endif %}">{{ post.title }}</a></h1>
+        <div class="subtitle">{{ post.published_date }} <a href='?cat={{ post.category.pk }}'>{{ post.category.category_name }}</a></div>
+        <div class='articlecontent'>{{ post.text|striptags|truncatewords:50 }}</div>
+        <div class='delimeter'></div>
+        <div>&nbsp;</div>
+    {% endfor %}
+
+    <div id="pagination">
+        <script>getPaging({{ posts.number }}, {{ totalcnt }}, {{ pagesize }}, 10, '{% if category %}&cat={{ category }}{% endif %}'); </script>
+    </div>
+
+
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Account Creation Completed{% endblock %}
+
+{% block location %}
+    &nbsp;&nbsp;/&nbsp;&nbsp;<a href='#'>CREATE ACCOUNT</a>
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='title'>Account Creation Completed</h1>
+    <div class="subtitle">뭐, 그럭저럭 반갑네요. 지금 로그인하세요. </div>
+    <div>&nbsp;</div>
+    <div>
+        <a href="{% url 'login' %}" class='btn'>로그인</a>
+    </div>
+
+
+{% endblock %}
