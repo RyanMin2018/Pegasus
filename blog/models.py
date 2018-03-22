@@ -32,7 +32,7 @@ class AttachedImage(models.Model):
     img    = models.ImageField(blank=True, null=True, upload_to='%Y%m', verbose_name='이미지')
 
     def __str__(self):
-        return self.file.name
+        return self.img.name
 
 
 
