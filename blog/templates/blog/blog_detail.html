@@ -108,13 +108,14 @@
             </div>
         </div>
 
+        {% if request.user.is_authenticated %}
         <form name="frmEnt" id="frmEnt" method="post" onsubmit="regist();return false;">
             {% csrf_token %}
             <input type='hidden' name='page' value='{{page}}'>
             <input type='hidden' name='cat' value='{% if category %}{{category}}{% endif %}'>
             <input type="text" name="comment" id="comment" style="width:100%;" placeholder="당신의 생각을 덧붙이세요. 엔터키를 누르면 저장됩니다." title="댓글등록, 댓글을 쓰시고 엔터키를 누르면 저장됩니다.">
         </form>
-
+        {% endif %}
 
         <table id='articlecomment' style="width:100%;">
             <colgroup>
