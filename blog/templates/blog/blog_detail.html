@@ -3,17 +3,63 @@
 
 {% block title %}{{ post.title }}{% endblock %}
 
+{% block custom_style %}
+        <style>
+        td.writer, td.btn {border:0;}
+        td.writer {color:#000;font-weight:bold;}
+        td.writer span {margin-left:10px;color:#555;font-weight:normal;}
+        td.btn {text-align:right;}
+        td.btn img {width:15px;height:15px;}
+        </style>
+{% endblock custom_style %}
+
 {% block custom_script %}
         <script>
         {% if request.user.is_authenticated %}
             {% if post_author == request.user %}
-        function drop_confirm() {
+        function dropConfirm() {
             if(confirm('정말 삭제하시겠습니까?')) {
                 location.href = '{% url 'blog:blog_delete' pk=post.pk %}';
             }
         }
             {% endif %}
+
         {% endif %}
+
+        function getCommentRow(author, dt, id, comment) {
+            str  = '';
+            str += '<tr id="comment_'+id+'_head">';
+            str += '<td class="writer" nowrap>';
+            str += author;
+            str += '<span>('+dt+')</span>';
+            str += '</td>';
+            str += '<td class="btn">';
+            {% if request.user.is_authenticated %}
+            if ('{{request.user}}'==author) {                            
+                str += '<img src="{% static 'images/btnDrop.png' %}" onclick="dropComment('+id+');">';
+            }
+            {% endif %}
+            str += '</td>';
+            str += '</tr>';
+            str += '<tr id="comment_'+id+'_tail"><td colspan="2">'+comment+'</td></tr>\n';
+            return str;
+        }
+
+        function regist() {
+            {% if request.user.is_authenticated %}
+            var params = $("#frmEnt").serialize();
+            $.ajax({
+                url:"{% url 'blog:blog_comment_new' pk=post.pk %}",
+                type:'post',
+                data:params,
+                success:function(result) {
+                    $('#articlecomment').append(getCommentRow("{{request.user}}", "방금전", result, $("#comment").val()));
+                    $("#comment").val("");
+                }
+            });
+            {% endif %}
+        }
+
         </script>
 {% endblock custom_script %}
 
@@ -21,7 +67,7 @@
     {% if request.user.is_authenticated %}
         {% if post_author == request.user %}
             <a href='{% url 'blog:blog_edit' pk=post.pk %}'>EDIT</a>
-            <a href='javascript:drop_confirm()'>DROP</a>
+            <a href='javascript:dropConfirm()'>DROP</a>
         {% endif %}
         <a href='{% url 'blog:blog_new' %}'>NEW</a>
     {% endif %}
@@ -62,6 +108,22 @@
             </div>
         </div>
 
+        <form name="frmEnt" id="frmEnt" method="post" onsubmit="regist();return false;">
+            {% csrf_token %}
+            <input type='hidden' name='page' value='{{page}}'>
+            <input type='hidden' name='cat' value='{% if category %}{{category}}{% endif %}'>
+            <input type="text" name="comment" id="comment" style="width:100%;" placeholder="당신의 생각을 덧붙이세요. 엔터키를 누르면 저장됩니다." title="댓글등록, 댓글을 쓰시고 엔터키를 누르면 저장됩니다.">
+        </form>
+
+
+        <table id='articlecomment' style="width:100%;">
+            <colgroup>
+                <col style="width:*;">
+                <col style="width:20px;">
+            </colgroup>
+            <tbody></tbody>
+        </table>
+
     </div>
 
     <script src='{% get_static_prefix %}js/SpeechText.js?0003' type='text/javascript'></script>
@@ -83,6 +145,35 @@
         st.msg.onend = function(e) {
         	if (start) speakContinue();
         };
+
+        {% if request.user.is_authenticated %}
+        function dropComment(id) {
+            $.ajax({
+                url:"{% url 'blog:blog_comment_list' pk=post.pk %}"+id +"/delete/",
+                success:function(result) {
+                    console.log(result);
+                    $("#comment_"+result+"_head").fadeOut();
+                    $("#comment_"+result+"_tail").fadeOut();
+                }
+            });
+        }
+        {% endif %}
+
+        $(document).ready(function(){
+            $.ajax({
+                url:"{% url 'blog:blog_comment_list' pk=post.pk %}",
+                success:function(data) {
+                    var d = eval(data);
+                    var str = "";
+                    for (var n in d) {
+                        str += getCommentRow(d[n]['author'], d[n]['dt'], d[n]['id'], d[n]['comment']);
+                    }
+                    $('#articlecomment').html(str); 
+                    // console.log($('#articlecomment').html());
+                }
+            });
+        });
+
     </script>
 
 {% endblock %}

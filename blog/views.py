@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, redirect, resolve_url
-from django.http import HttpResponse#, HttpResponseRedirect
+from django.http import HttpResponse#, JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 #from django.contrib import messages
-from .models import Blog, AttachedImage, Category
-from .forms import BlogForm, BlogImageFormSet
+from .models import Blog, AttachedImage, Category, Comment
+from .forms import BlogForm, BlogImageFormSet, CommentForm
 
 # List Page
 def blog_list(request):
@@ -43,6 +43,8 @@ def blog_list(request):
 def blog_detail(request, pk):
     post  = get_object_or_404(Blog.objects.select_related('category'), pk=pk)
     page  = request.GET.get('page')
+    if not page:
+        page = 1
     catid = request.GET.get('cat')
     files = AttachedImage.objects.filter(blogid=pk)
     return render(request, 'blog/blog_detail.html', {
@@ -50,7 +52,7 @@ def blog_detail(request, pk):
             'page':page,
             'files':files,
             'category':catid,
-            'post_author':post.author
+            'post_author':post.author,
         }
     )
 
@@ -107,7 +109,7 @@ def blog_edit(request, pk):
                                             form_kwargs={'label_suffix': ''})
             return render(request, 'blog/blog_form.html', {
                     'form': form,
-                    'fileform':ImageFormSet,
+                    'fileform':ImageFormSet, 
                     'strPageTitle':'수정',
                     'post_author':post.author
                 }
@@ -142,3 +144,41 @@ def blog_category_count(request):
         res += '</a>'
         res += '</li>'
     return HttpResponse(res)
+
+# Comments List
+def comment_list(request, pk):
+    comments = Comment.objects.filter(blogid=pk)
+    res = '['
+    for c in comments:
+        res += '{'
+        res += '"author":"' + str(c.author) + '",'
+        res += '"comment":"' + str(c.comment) + '",'
+        res += '"dt":"' + str(c.created_date.strftime("%Y.%m.%d %H:%M:%S")) + '",'
+        res += '"id":"' + str(c.id) + '"'
+        res += '},'
+    res = res.rstrip(',')
+    res += ']'
+    return HttpResponse(res)
+
+# Add Comment
+def comment_new(request, pk):
+    blogid = Blog.objects.get(pk=pk)
+    if request.method == "POST" and request.user.is_authenticated:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.blogid = blogid
+            post.save()
+            return HttpResponse(str(post.pk))
+    else:
+        return render(request, 'registration/access_deny.html')
+
+# Delete Comment
+def comment_delete(request, pk, id):
+    post = get_object_or_404(Comment, pk=id)
+    if request.user.is_authenticated and request.user == post.author:
+        post.delete()
+        return HttpResponse(str(id))
+    else:
+        return render(request, 'registration/access_deny.html')

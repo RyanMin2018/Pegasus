@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import inlineformset_factory
-from .models import Blog, AttachedImage
+from .models import Blog, AttachedImage, Comment
 
 class BlogForm(forms.ModelForm):
     class Meta:
@@ -15,3 +15,9 @@ class BlogForm(forms.ModelForm):
         self.label_suffix = ''
 
 BlogImageFormSet = inlineformset_factory(Blog, AttachedImage, fields=('img',), extra=2)
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('comment',)
+
