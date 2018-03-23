@@ -7,4 +7,5 @@ settings.py
 /media
 migrations
 manage.py
+db.sqlite3
 
