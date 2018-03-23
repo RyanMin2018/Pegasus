@@ -8,7 +8,7 @@ $ python manage.py startapp blog
 $ python manage.py startapp poll
 </pre>
 
-<p>를 실행 한 후에 "settings.py"를 아래와 같이 수정하지 말입니다.</p>
+<p>를 실행 한 후에 "settings.py"를 아래와 같이 수정</p>
 
 <hr />
 
