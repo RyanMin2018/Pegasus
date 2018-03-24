@@ -35,7 +35,7 @@
             str += '</td>';
             str += '<td class="btn">';
             {% if request.user.is_authenticated %}
-            if ('{{request.user}}'==author) {                            
+            if ('{{request.user}}'==author) {
                 str += '<img src="{% static 'images/btnDrop.png' %}" onclick="dropComment('+id+');">';
             }
             {% endif %}
@@ -104,9 +104,9 @@
             <img class='article_imgs' src='{{f.img.url}}' title='{{ f.img.name }}' />
             {% endfor %}
             <div id='articlecontent'>
-                {% autoescape off %}
-                    {{ post.text }}
-                {% endautoescape %}
+                {# autoescape off #}
+                    {{ post.text|linebreaksbr|urlize }}
+                {# endautoescape #}
              </div>
             </div>
 
@@ -171,7 +171,7 @@
                     for (var n in d) {
                         str += getCommentRow(d[n]['author'], d[n]['dt'], d[n]['id'], d[n]['comment']);
                     }
-                    $('#articlecomment').html(str); 
+                    $('#articlecomment').html(str);
                     // console.log($('#articlecomment').html());
                 }
             });

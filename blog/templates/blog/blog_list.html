@@ -25,7 +25,7 @@
     {% for post in posts %}
         <h1 class='title'><a href="{% url 'blog:blog_detail' pk=post.pk %}?page={{posts.number}}{% if category %}&cat={{ category }}{% endif %}">{{ post.title }}</a></h1>
         <div class="subtitle">{{ post.published_date }} <a href='?cat={{ post.category.pk }}'>{{ post.category.category_name }}</a></div>
-        <div class='articlecontent'>{{ post.text|striptags|truncatewords:50 }}</div>
+        <div class='articlecontent'>{{ post.text|safe|striptags|truncatechars:400 }}</div>
         <div class='delimeter'></div>
         <div>&nbsp;</div>
     {% endfor %}

@@ -20,11 +20,11 @@
 {% endblock custom_style %}
 
 {% block custom_script %}
-        <script type="text/javascript" src="{% static 'editor/HuskyEZCreator.js' %}" charset="utf-8"></script>
+        <!-- script type="text/javascript" src="{% static 'editor/HuskyEZCreator.js' %}" charset="utf-8"></script -->
         <script type="text/javascript">
             function save() {
-                oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);
-                document.getElementById('id_text').value;
+                //oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);
+                //document.getElementById('id_text').value;
                 document.frmEnt.submit();
             }
         </script>
@@ -72,18 +72,18 @@
     </div>
 
 
-    <script type="text/javascript">
+    <!-- script type="text/javascript">
         var oEditors = [];
             nhn.husky.EZCreator.createInIFrame({
             oAppRef: oEditors,
-            elPlaceHolder: "id_text", //textarea에서 지정한 id와 일치해야 합니다.
+            elPlaceHolder: "id_text",
             sSkinURI: "{% static 'editor/skin.html' %}",
             htParams : {fOnBeforeUnload : function(){},
-                        fOnAppLoad : function(){}  
+                        fOnAppLoad : function(){}
                         },
             fCreator: "createSEditor2"
         });
-        </script>
+        </script -->
 
 {% endblock content %}
 
