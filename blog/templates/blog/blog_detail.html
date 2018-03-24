@@ -104,7 +104,9 @@
             <img class='article_imgs' src='{{f.img.url}}' title='{{ f.img.name }}' />
             {% endfor %}
             <div id='articlecontent'>
-                {{ post.text|linebreaksbr|urlize }}
+                {% autoescape off %}
+                    {{ post.text }}
+                {% endautoescape %}
              </div>
             </div>
 

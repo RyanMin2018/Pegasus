@@ -1,4 +1,5 @@
 {% extends 'main/layout.html' %}
+{% load staticfiles %}
 
 {% block title %}{{ strPageTitle }} - 생각을 기록하고 나누세요!{% endblock %}
 
@@ -10,12 +11,24 @@
         label[for$='clear_id'], input[id$='clear_id'] {display:none;}
         label[for$='DELETE'] {margin-left:90px;margin-top:-5px;font-weight:normal;width:30px;}
         button {margin-left:90px;}
+        iframe {margin-left:90px;margin-top:-30px;}
 
         @media only screen and (max-width : 700px) {
                label[for$='DELETE'] {display:block;margin-left:0;}
         }
         </style>
 {% endblock custom_style %}
+
+{% block custom_script %}
+        <script type="text/javascript" src="{% static 'editor/HuskyEZCreator.js' %}" charset="utf-8"></script>
+        <script type="text/javascript">
+            function save() {
+                oEditors[0].exec("UPDATE_CONTENTS_FIELD", []);
+                document.getElementById('id_text').value;
+                document.frmEnt.submit();
+            }
+        </script>
+{% endblock custom_script %}
 
 {% block custom_actions %}
     {% if request.user.is_authenticated %}
@@ -50,13 +63,27 @@
     {% endif %}
 
     <div id='articlecontent'>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" name='frmEnt' enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_ul }}
         {{ fileform.as_ul }}
-        <div id='btns'><button type="submit">저장</button></div>
+        <div id='btns'><a href="javascript:save();" class='btn'>저장</a></div>
         </form>
     </div>
+
+
+    <script type="text/javascript">
+        var oEditors = [];
+            nhn.husky.EZCreator.createInIFrame({
+            oAppRef: oEditors,
+            elPlaceHolder: "id_text", //textarea에서 지정한 id와 일치해야 합니다.
+            sSkinURI: "{% static 'editor/skin.html' %}",
+            htParams : {fOnBeforeUnload : function(){},
+                        fOnAppLoad : function(){}  
+                        },
+            fCreator: "createSEditor2"
+        });
+        </script>
 
 {% endblock content %}
 
