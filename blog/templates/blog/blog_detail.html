@@ -105,8 +105,8 @@
             {% endfor %}
             <div id='articlecontent'>
                 {{ post.text|linebreaksbr|urlize }}
+             </div>
             </div>
-        </div>
 
         {% if request.user.is_authenticated %}
         <form name="frmEnt" id="frmEnt" method="post" onsubmit="regist();return false;">
@@ -127,7 +127,7 @@
 
     </div>
 
-    <script src='{% get_static_prefix %}js/SpeechText.js?0003' type='text/javascript'></script>
+    <script src='{% get_static_prefix %}js/SpeechText.js?00004' type='text/javascript'></script>
     <script type='text/javascript'>
         var start = false;
         var st = new SpeechText('59d225a9634d334550e6a834', 'ko-KR', 'articlecontent');

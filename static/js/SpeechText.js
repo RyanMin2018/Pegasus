@@ -6,8 +6,10 @@ var SpeechText = function(bid, langCd, idToSpeak) {
 	    this.msg.lang = (langCd)? langCd : "en-US";
 	    // this.msg.pitch = 1.8;
 	}
-	document.getElementById(idToSpeak).innerText += ".";
-	this.arrText = (document.getElementById(idToSpeak).innerText.replace(/\n\n/gi, '        ').replace(/ \n/gi, '').replace(/\n/gi, '').replace(/\./gi, '\. ').replace(/,/gi, ', ')).split(". ");
+
+	var t = document.createElement('div');
+	t = document.getElementById(idToSpeak).innerText + ".";
+	this.arrText = (t.replace(/\n\n/gi, '        ').replace(/ \n/gi, '').replace(/\n/gi, '').replace(/\./gi, '\. ').replace(/,/gi, ', ')).split(". ");
 	this.boardid = bid;
 
 	this.divideText = function() {

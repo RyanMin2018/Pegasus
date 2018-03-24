@@ -8,4 +8,4 @@ settings.py
 migrations
 manage.py
 db.sqlite3
-
+.DS_Store
